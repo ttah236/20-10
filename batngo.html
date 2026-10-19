@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Happy 20/10 💜</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:100%;height:100%;overflow:hidden;touch-action:none;-webkit-user-select:none;user-select:none}
+body{
+  font-family:'Be Vietnam Pro', 'Segoe UI', Arial, sans-serif;
+  background:radial-gradient(ellipse at 50% 75%,#51245f 0%,#241338 45%,#080916 100%);
+  color:#ffe9bd;
+}
+
+#sky{position:fixed;inset:0;width:100%;height:100%;z-index:1}
+#fog{position:fixed;inset:0;width:100%;height:100%;z-index:10;touch-action:none;cursor:crosshair}
+
+.scene{position:fixed;inset:0;z-index:5;display:flex;align-items:center;justify-content:center;pointer-events:none}
+
+h1{
+  font-family:'Be Vietnam Pro', 'Segoe UI', sans-serif;
+  font-size:clamp(64px,15vw,170px);
+  font-weight:300;
+  letter-spacing:.05em;
+  color:#ffe6a4;
+  text-shadow:0 0 12px #ffca75,0 0 35px #e9a8ff,0 0 80px #b35fff;
+  animation:glow 3s ease-in-out infinite alternate;
+  line-height:1;
+}
+
+.float{
+  position:fixed;z-index:6;
+  font-family:'Be Vietnam Pro', 'Segoe UI', sans-serif;
+  font-size:clamp(14px,2.2vw,21px);
+  font-weight:400;
+  color:#ffd4ec;
+  text-shadow:0 0 14px #d88bff,0 0 28px rgba(154,77,255,0.3);
+  white-space:nowrap;
+  pointer-events:none;
+  will-change:transform;
+  opacity:0.88;
+  transition:opacity 1.5s;
+}
+
+.hint{
+  position:fixed;bottom:22px;z-index:15;
+  left:0;right:0;text-align:center;
+  font:500 13px/1 'Be Vietnam Pro','Segoe UI',Arial,sans-serif;
+  letter-spacing:.18em;
+  color:#d6bce7cc;
+  animation:pulse-hint 2s ease-in-out infinite;
+  transition:opacity 1s;
+}
+
+/* ─── Card ─── */
+.card{
+  position:fixed;z-index:20;
+  top:50%;left:50%;
+  transform:translate(-50%,-50%) scale(0.82);
+  max-width:600px;width:88%;
+  max-height:80vh;overflow-y:auto;
+  padding:36px 30px 30px;
+  background:linear-gradient(145deg,rgba(45,16,70,0.85),rgba(20,7,38,0.9));
+  border:1.5px solid rgba(255,180,255,0.22);
+  border-radius:22px;
+  backdrop-filter:blur(22px);
+  -webkit-backdrop-filter:blur(22px);
+  box-shadow:0 0 60px rgba(180,95,255,0.18),inset 0 0 40px rgba(255,200,255,0.03);
+  text-align:center;
+  opacity:0;pointer-events:none;
+  transition:opacity 1.5s ease,transform 1.5s ease;
+}
+.card.visible{opacity:1;transform:translate(-50%,-50%) scale(1);pointer-events:auto}
+.card::-webkit-scrollbar{width:4px}
+.card::-webkit-scrollbar-track{background:transparent}
+.card::-webkit-scrollbar-thumb{background:rgba(255,180,255,0.3);border-radius:4px}
+
+.card-close{
+  position:absolute;top:12px;right:16px;
+  width:32px;height:32px;
+  background:rgba(255,255,255,0.08);
+  border:1px solid rgba(255,200,255,0.2);
+  border-radius:50%;
+  color:#e0c0f0;font-size:18px;line-height:30px;
+  cursor:pointer;
+  transition:background .3s, transform .3s;
+  display:flex;align-items:center;justify-content:center;
+}
+.card-close:hover{background:rgba(255,255,255,0.15);transform:scale(1.1)}
+
+.card h2{
+  font-family:'Be Vietnam Pro', 'Segoe UI', sans-serif;
+  font-size:clamp(19px,3.5vw,28px);
+  font-weight:500;
+  color:#ffe6a4;
+  text-shadow:0 0 15px rgba(255,202,117,0.6);
+  margin-bottom:22px;
+}
+.card p{
+  font-family:'Be Vietnam Pro', 'Segoe UI', sans-serif;
+  font-size:clamp(13px,1.85vw,16px);
+  font-weight:400;
+  line-height:1.9;
+  color:#ffe8d5;
+  text-shadow:0 1px 4px #0a0312;
+}
+.card .sig{
+  margin-top:24px;
+  font-family:'Be Vietnam Pro', 'Segoe UI', sans-serif;
+  font-size:clamp(13px,2vw,17px);
+  font-weight:500;
+  font-style:italic;
+  color:#ffb8d9;
+  text-shadow:0 0 10px rgba(255,117,200,0.5);
+}
+
+/* ─── Reopen button ─── */
+.reopen-btn{
+  position:fixed;z-index:18;
+  bottom:22px;right:22px;
+  width:50px;height:50px;
+  background:rgba(60,20,90,0.7);
+  border:1.5px solid rgba(255,180,255,0.25);
+  border-radius:50%;
+  backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);
+  color:#ffe6a4;font-size:24px;
+  cursor:pointer;
+  display:none;align-items:center;justify-content:center;
+  transition:background .3s, transform .3s;
+  box-shadow:0 0 20px rgba(180,95,255,0.2);
+}
+.reopen-btn:hover{background:rgba(80,30,120,0.8);transform:scale(1.1)}
+.reopen-btn.show{display:flex}
+
+.heart{display:inline-block;animation:beat 1.1s infinite;color:#ffb8d9}
+.roses{margin-top:16px;font-size:clamp(18px,2.8vw,28px);letter-spacing:5px;animation:rosePulse 2.5s ease-in-out infinite alternate}
+
+@keyframes glow{from{filter:brightness(.88);transform:scale(1)}to{filter:brightness(1.2);transform:scale(1.03)}}
+@keyframes beat{0%,100%{transform:scale(1)}50%{transform:scale(1.25)}}
+@keyframes pulse-hint{0%,100%{opacity:.55}50%{opacity:1}}
+@keyframes rosePulse{from{transform:scale(1)}to{transform:scale(1.05)}}
+</style>
+</head>
+<body>
+
+<canvas id="sky"></canvas>
+<canvas id="fog"></canvas>
+
+<main class="scene"><h1>20/10</h1></main>
+
+<div class="card" id="card">
+  <button class="card-close" id="cardClose" title="Đóng">✕</button>
+  <h2>🌸 Nhân ngày 20/10 <span class="heart">♡</span></h2>
+  <p>
+    Mong các bạn nữ nhóm mình luôn được yêu thương 💕🩷, được nâng niu hạnh phúc theo cách mà bản thân đã mong muốn.
+    <br><br>
+    Chúc các bạn mãi là bông hoa 🌹, luôn rạng rỡ trước ánh mặt trời 🌻
+    <br><br>
+    🌹🌷Luôn luôn yêu đời, xinh đẹp, có tất cả trừ vất vả💐 ✨
+    <br><br>
+    Luôn đầy ắp hạnh phúc trong cuộc sống, không còn muộn phiền tiêu cực nhé 💜
+    <br><br>
+    Chúc các bạn mỗi ngày đều gặp được may mắn và hạnh phúc 🍀
+  </p>
+  <div class="sig">Gửi tới 8 bông hồng nhóm Đớp nhéeeeee</div>
+  <div class="roses">🌹🌹🌹🌹🌹🌹🌹🌹</div>
+</div>
+
+<button class="reopen-btn" id="reopenBtn" title="Xem lại lời chúc">💌</button>
+
+<div class="hint" id="hint">✦ VUỐT ĐỂ KHÁM PHÁ ✦</div>
+
+<script>
+/* ═══ Canvas setup ═══════════════════════════ */
+const sky   = document.getElementById("sky");
+const sCtx  = sky.getContext("2d");
+const fogEl = document.getElementById("fog");
+const fCtx  = fogEl.getContext("2d");
+
+let w, h, dpr;
+let stars = [], particles = [], hearts = [];
+let revealed = false, pressing = false;
+let erased = 0, total = 1;
+let lastX = -1, lastY = -1;
+
+const rand = (a, b) => Math.random() * (b - a) + a;
+
+/* ═══ Floating phrases ═══════════════════════ */
+const phraseData = [
+  { text: "được yêu thương",  ox: -0.23, oy: -0.15 },
+  { text: "mãi xinh đẹp",    ox:  0.21, oy: -0.17 },
+  { text: "nụ cười rạng rỡ",  ox: -0.25, oy:  0.12 },
+  { text: "thật hạnh phúc",   ox:  0.23, oy:  0.14 },
+  { text: "mọi điều như ý",   ox:  0.00, oy:  0.24 }
+];
+let floats = [];
+
+function initFloats() {
+  floats.forEach(f => f.el.remove());
+  const m = 70;
+  floats = phraseData.map(p => {
+    const el = document.createElement("div");
+    el.className = "float";
+    el.textContent = p.text;
+    document.body.appendChild(el);
+    return {
+      el,
+      bx: Math.max(m, Math.min(w - m, w/2 + p.ox*w)),
+      by: Math.max(m, Math.min(h - m, h/2 + p.oy*h)),
+      ph: rand(0, 6.28),
+      sx: rand(0.3, 0.6), sy: rand(0.2, 0.5),
+      ax: rand(18, 42),   ay: rand(14, 34)
+    };
+  });
+}
+
+function tickFloats(t) {
+  for (let i = 0; i < floats.length; i++) {
+    const f = floats[i];
+    const x = f.bx + Math.sin(t * 0.0004 * f.sx + f.ph) * f.ax;
+    const y = f.by + Math.cos(t * 0.00032 * f.sy + f.ph * 1.4) * f.ay;
+    f.el.style.transform = `translate(${x}px, ${y}px) translate(-50%,-50%)`;
+  }
+}
+
+/* ═══ Resize ═════════════════════════════════ */
+function resize() {
+  dpr = Math.min(devicePixelRatio || 1, 1.5);   /* cap DPR for perf */
+  w = innerWidth; h = innerHeight;
+
+  for (const c of [sky, fogEl]) {
+    c.width  = w * dpr;
+    c.height = h * dpr;
+    c.style.width  = w + "px";
+    c.style.height = h + "px";
+  }
+  sCtx.setTransform(dpr,0,0,dpr,0,0);
+  fCtx.setTransform(dpr,0,0,dpr,0,0);
+
+  total = w * h;
+  erased = 0;
+  if (!revealed) drawFog();
+
+  /* fewer stars = less work per frame */
+  stars = Array.from({ length: Math.floor(total / 3500) }, () => ({
+    x: rand(0,w), y: rand(0,h),
+    r: rand(0.4, 1.6),
+    ph: rand(0, 6.28),
+    sp: rand(0.5, 1.8)
+  }));
+
+  initFloats();
+}
+
+/* ═══ Fog ════════════════════════════════════ */
+function drawFog() {
+  const g = fCtx.createRadialGradient(w/2,h*0.5,0, w/2,h*0.5, Math.max(w,h)*0.78);
+  g.addColorStop(0,   "rgba(30,13,50,0.94)");
+  g.addColorStop(0.55,"rgba(16,7,32,0.96)");
+  g.addColorStop(1,   "rgba(6,2,16,0.98)");
+  fCtx.fillStyle = g;
+  fCtx.fillRect(0,0,w,h);
+
+  /* fewer wisps */
+  for (let i = 0; i < 15; i++) {
+    const cx = rand(0,w), cy = rand(0,h), r = rand(60,200);
+    const mg = fCtx.createRadialGradient(cx,cy,0, cx,cy,r);
+    mg.addColorStop(0, `rgba(${35+rand(0,20)|0},${10+rand(0,15)|0},${45+rand(0,25)|0},0.2)`);
+    mg.addColorStop(1, "rgba(0,0,0,0)");
+    fCtx.fillStyle = mg;
+    fCtx.fillRect(cx-r,cy-r,r*2,r*2);
+  }
+}
+
+function erase(x, y) {
+  if (revealed) return;
+  const r = Math.max(Math.min(w,h) * 0.05, 30);
+
+  fCtx.save();
+  fCtx.globalCompositeOperation = "destination-out";
+  const g = fCtx.createRadialGradient(x,y,0, x,y,r);
+  g.addColorStop(0,  "rgba(0,0,0,1)");
+  g.addColorStop(0.6,"rgba(0,0,0,0.85)");
+  g.addColorStop(1,  "rgba(0,0,0,0)");
+  fCtx.fillStyle = g;
+  fCtx.beginPath();
+  fCtx.arc(x,y,r,0,Math.PI*2);
+  fCtx.fill();
+  fCtx.restore();
+
+  erased += Math.PI * r * r * 0.45;
+  if (erased > total * 0.45) revealAll();      /* 45 % threshold */
+}
+
+function eraseSmooth(x, y) {
+  if (lastX >= 0) {
+    const dx = x - lastX, dy = y - lastY;
+    const dist = Math.sqrt(dx*dx + dy*dy);
+    const steps = Math.max(1, Math.ceil(dist / 10));
+    for (let i = 1; i <= steps; i++) {
+      erase(lastX + dx*(i/steps), lastY + dy*(i/steps));
+    }
+  } else { erase(x,y); }
+  lastX = x; lastY = y;
+}
+
+/* ═══ Reveal ═════════════════════════════════ */
+function revealAll() {
+  if (revealed) return;
+  revealed = true;
+
+  fogEl.style.transition = "opacity 2.5s ease-out";
+  fogEl.style.opacity = "0";
+  fogEl.style.pointerEvents = "none";
+  document.getElementById("hint").style.opacity = "0";
+
+  setTimeout(() => {
+    floats.forEach(f => { f.el.style.opacity = "0.35"; });
+    showCard();
+    burst(w/2, h*0.32, 120);
+    setTimeout(() => burst(w*0.22, h*0.5, 60), 500);
+    setTimeout(() => burst(w*0.78, h*0.45, 60), 900);
+  }, 1800);
+}
+
+/* ═══ Card toggle ════════════════════════════ */
+function showCard() {
+  document.getElementById("card").classList.add("visible");
+  document.getElementById("reopenBtn").classList.remove("show");
+}
+
+function hideCard() {
+  document.getElementById("card").classList.remove("visible");
+  document.getElementById("reopenBtn").classList.add("show");
+}
+
+document.getElementById("cardClose").addEventListener("click", e => {
+  e.stopPropagation();
+  hideCard();
+});
+
+document.getElementById("reopenBtn").addEventListener("click", e => {
+  e.stopPropagation();
+  showCard();
+  burst(w/2, h/2, 80);
+});
+
+/* ═══ Particles & Hearts ════════════════════ */
+function burst(x, y, n) {
+  n = n || 60;
+  for (let i = 0; i < n; i++) {
+    const a = rand(0, 6.28), sp = rand(0.5, 4.8);
+    particles.push({
+      x, y,
+      vx: Math.cos(a)*sp, vy: Math.sin(a)*sp,
+      life: rand(40,90), max: 90,
+      sz: rand(1, 2.8),
+      hue: rand(30, 320)
+    });
+  }
+  hearts.push({ x, y, sc: rand(0.4, 1.2), life: 110 });
+}
+
+function drawHeart(x, y, s, a) {
+  sCtx.save();
+  sCtx.translate(x,y); sCtx.scale(s,s); sCtx.globalAlpha = a;
+  sCtx.beginPath();
+  sCtx.moveTo(0,-8);
+  sCtx.bezierCurveTo(-16,-22,-28,-3,0,17);
+  sCtx.bezierCurveTo(28,-3,16,-22,0,-8);
+  sCtx.closePath();
+  sCtx.fillStyle = "#ffb6dc";
+  sCtx.fill();
+  sCtx.restore();
+}
+
+/* ═══ Render loop (optimized — no shadowBlur) ═ */
+function frame(t) {
+  sCtx.clearRect(0,0,w,h);
+  const ox = w/2, oy = h*0.72;
+
+  sCtx.save();
+  sCtx.globalCompositeOperation = "screen";
+
+  /* — Light rays (reduced from 38 → 20) — */
+  const rotOff = Math.sin(t * 0.0002) * 0.08;
+  for (let i = 0; i < 20; i++) {
+    const a = i * 0.31416 + rotOff;          /* 2π/20 ≈ 0.31416 */
+    const cosA = Math.cos(a), sinA = Math.sin(a);
+    const len = Math.max(w,h) * 1.1;
+    const ex = ox + cosA*len, ey = oy + sinA*len;
+    const g = sCtx.createLinearGradient(ox,oy,ex,ey);
+    g.addColorStop(0,"rgba(255,196,115,0.1)");
+    g.addColorStop(1,"rgba(180,92,255,0)");
+    sCtx.strokeStyle = g;
+    sCtx.lineWidth = 0.8;
+    sCtx.beginPath();
+    sCtx.moveTo(ox,oy);
+    sCtx.lineTo(ex,ey);
+    sCtx.stroke();
+  }
+
+  /* — Stars (NO shadowBlur — much faster) — */
+  sCtx.shadowBlur = 0;
+  for (let i = 0; i < stars.length; i++) {
+    const s = stars[i];
+    const alpha = 0.3 + 0.6 * (0.5 + 0.5*Math.sin(t*0.001*s.sp + s.ph));
+    sCtx.globalAlpha = alpha;
+    sCtx.fillStyle = "#ffe9c4";
+    sCtx.beginPath();
+    sCtx.arc(s.x, s.y, s.r, 0, 6.28);
+    sCtx.fill();
+  }
+  sCtx.restore();
+
+  /* — Sparkle particles (minimal shadow) — */
+  let j = 0;
+  for (let i = 0; i < particles.length; i++) {
+    const p = particles[i];
+    p.x += p.vx; p.y += p.vy;
+    p.vx *= 0.985; p.vy *= 0.985; p.vy += 0.008;
+    p.life--;
+    if (p.life <= 0) continue;
+    particles[j++] = p;
+
+    const a = p.life / p.max;
+    sCtx.globalAlpha = a;
+    sCtx.fillStyle = `hsl(${p.hue} 100% 75%)`;
+    sCtx.beginPath();
+    sCtx.arc(p.x, p.y, p.sz, 0, 6.28);
+    sCtx.fill();
+  }
+  particles.length = j;
+
+  sCtx.globalAlpha = 1;
+
+  /* — Hearts (no shadow) — */
+  j = 0;
+  for (let i = 0; i < hearts.length; i++) {
+    const a = hearts[i];
+    if (a.life <= 0) continue;
+    hearts[j++] = a;
+    drawHeart(a.x, a.y - (110-a.life)*0.42, a.sc, a.life/110);
+    a.life--;
+  }
+  hearts.length = j;
+
+  /* — Floating text — */
+  tickFloats(t);
+
+  requestAnimationFrame(frame);
+}
+
+/* ═══ Pointer events ═════════════════════════ */
+fogEl.addEventListener("pointerdown", e => {
+  e.preventDefault();
+  pressing = true;
+  lastX = e.clientX; lastY = e.clientY;
+  erase(e.clientX, e.clientY);
+});
+
+fogEl.addEventListener("pointermove", e => {
+  if (!pressing) return;
+  e.preventDefault();
+  eraseSmooth(e.clientX, e.clientY);
+});
+
+window.addEventListener("pointerup", () => { pressing = false; lastX = lastY = -1; });
+
+document.body.addEventListener("pointerdown", e => {
+  if (revealed && e.target === document.body || e.target === sky) {
+    burst(e.clientX, e.clientY, 80);
+  }
+});
+
+window.addEventListener("resize", resize);
+
+/* ═══ Init ═══════════════════════════════════ */
+resize();
+burst(w/2, h*0.72, 120);
+setTimeout(() => burst(w*0.22, h*0.48, 50), 800);
+setTimeout(() => burst(w*0.78, h*0.42, 50), 1500);
+
+setInterval(() => {
+  if (Math.random() > 0.5) {
+    burst(rand(w*0.12,w*0.88), rand(h*0.15,h*0.8), 18);
+  }
+}, 2200);
+
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>
